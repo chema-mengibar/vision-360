@@ -36,9 +36,78 @@ light.castShadow = true;
 scene.add(light)
 
 // ######################################################################### 3D
+
+
+const players = {
+    'player-g-1': {x:10, z:10},
+    'player-g-2': {x:20, z:10},
+    'player-g-3': {x:15, z:0},
+    'player-g-4': {x:0, z:10},
+    'player-g-goalie': {x:0, z:0},
+    'player-h-goalie': {x:0, z:0},
+    'player-h-1': {x:5, z:0},
+    'player-h-2': {x:5, z:10},
+    'player-h-3': {x:0, z:5},
+    'player-h-0': {x:-18, z:0},
+}
+
+const _ = {}
+
 const loader = new GLTFLoader();
-loader.load( 'rink-base.glb', function ( gltf ) {
-     scene.add( gltf.scene );
+loader.load( 'hall.glb', function ( gltf ) {
+    _.scene = gltf.scene;
+
+    _.scene.traverse(o => {
+
+        if(o.name.includes('player-')){
+
+            console.log(o.name)
+
+            o.children.forEach( (child, idx) =>{
+
+                // player color: home or guest
+                let color =  o.name.includes('-h') ? '#ff0000' :  '#0000ff'
+                let opacity = 1;
+                
+                if(o.name === 'player-h-0'){
+                    color = '#00ff00'
+                }
+
+                // basis circle in player
+                if(idx === 1){
+                    color = o.name.includes('-h') ? '#550000' :  '#000055'
+                    if(o.name === 'player-h-0'){
+                        color = '#005500'
+                    }
+                    opacity = 0.4;
+                }
+                const m = new THREE.MeshBasicMaterial({ color: color })
+                m.side = THREE.DoubleSide;
+                m.side = THREE.DoubleSide;
+                m.opacity = opacity;
+                m.transparent = true;
+                m.needsUpdate = true;
+                child.material = m;
+            })
+
+            if(!o.name.includes('goalie')){
+                o.position.x = players[o.name].x;
+                o.position.z = players[o.name].z;
+            }
+
+            if(o.name === 'player-h-0'){
+                camera.position.x =  players[o.name].x;
+                camera.position.z =  players[o.name].z;
+                camera.position.y =  1.5;
+
+                const pt = new THREE.Vector3(0,1.7,0)
+                camera.lookAt(pt);
+            }
+        }
+    })
+
+
+    scene.add( _.scene );
 
 }, undefined, function ( error ) {
     console.error( '>>>>>>>>', error );
@@ -61,12 +130,6 @@ loader.load( 'rink-base.glb', function ( gltf ) {
 
 // ######################################################################### CAMERA
 
-camera.position.set(0,1,0);
-
-
-
-const pt = new THREE.Vector3(0,1,2)
-camera.lookAt(pt);
 
 
 
@@ -75,53 +138,7 @@ camera.lookAt(pt);
 
 
 
-// ##########################################################################  OBJECTS
 
-// ------------------------------------------ BOX
-const geometry = new THREE.BoxGeometry( 1, 1, 0.1 );
-const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-const cube = new THREE.Mesh( geometry, material );
-cube.userData.id ="CUBE"
-
-scene.add( cube );
-
-
-const xMax = 12.5;
-const xMin = -xMax;
-
-const yMax = 30;
-const yMin = -yMax;
-
-// 30:13, 29:8,  28:10, 27:10
-
-cube.position.x = 27;
-cube.position.z = 10;
-cube.position.y = 0;
-
-let angle = 90;
-let radians = 2 * Math.PI * (angle / 360);
-cube.rotation.y =  radians;
-
-// ------------------------------------------ TRIANGLE
-let vertices = new Float32Array([
-    0.0, 0.0, 0.0,    // vertex 1
-    0.0, 2.0, 0.0,     // vertex 2
-    0.0, 0.0, 2.0,      // vertex 3
-]);
-
-const  a = new THREE.BufferGeometry();
-a.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-
-const m = new THREE.MeshBasicMaterial({ color: 'red' })
-m.side = THREE.DoubleSide;
-const d = new THREE.Mesh(a, m);
-
-
-let angle1 = 220;
-let radians1 = 2 * Math.PI * (angle1 / 360);
-d.rotation.y =  radians1;
-d.userData.id = "TRIANGLE"
-scene.add(d)
 
 
 
