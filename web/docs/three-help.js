@@ -47,3 +47,21 @@ let radians1 = 2 * Math.PI * (angle1 / 360);
 d.rotation.y =  radians1;
 d.userData.id = "TRIANGLE"
 scene.add(d)
+
+
+
+// ######################################################################### CONTROLS
+//const controls = new OrbitControls( camera, renderer.domElement );
+// controls.object.position.set(5, 1, 0);
+// controls.target = new THREE.Vector3(-6, 0, -6);
+
+// controls.maxPolarAngle = Math.PI / 2.2;
+// controls.minPolarAngle = Math.PI / 2.2;
+
+// controls.object.position.set(1, 1,  5);
+// controls.target = new THREE.Vector3(5, 1, 10);
+
+// controls.enableZoom = false;
+
+
+

@@ -39,7 +39,7 @@ scene.add(light)
 
 
 const players = {
-    'player-g-1': {x:10, z:10},
+    'player-g-1': {x:10, z:-10},
     'player-g-2': {x:20, z:10},
     'player-g-3': {x:15, z:0},
     'player-g-4': {x:0, z:10},
@@ -53,17 +53,30 @@ const players = {
 
 const _ = {}
 
+let b ; 
+
 const loader = new GLTFLoader();
 loader.load( 'hall.glb', function ( gltf ) {
     _.scene = gltf.scene;
 
     _.scene.traverse(o => {
 
+        console.log(o.name)
+        // dist-1
+        // dist-2
+
         if(o.name.includes('player-')){
 
-            console.log(o.name)
+            
+            
 
             o.children.forEach( (child, idx) =>{
+
+
+
+                if(o.name === 'player-g-1'){
+                    b = o
+                }
 
                 // player color: home or guest
                 let color =  o.name.includes('-h') ? '#ff0000' :  '#0000ff'
@@ -81,6 +94,14 @@ loader.load( 'hall.glb', function ( gltf ) {
                     }
                     opacity = 0.4;
                 }
+                
+                // numbers
+                if(idx > 1){
+                    color =  '#000000'
+                 
+                    opacity = 1;
+                }
+                
                 const m = new THREE.MeshBasicMaterial({ color: color })
                 m.side = THREE.DoubleSide;
                 m.side = THREE.DoubleSide;
@@ -100,8 +121,9 @@ loader.load( 'hall.glb', function ( gltf ) {
                 camera.position.z =  players[o.name].z;
                 camera.position.y =  1.5;
 
-                const pt = new THREE.Vector3(0,1.7,0)
+                const pt = new THREE.Vector3(b.position.x,1.7,b.position.z)
                 camera.lookAt(pt);
+               
             }
         }
     })
@@ -114,21 +136,18 @@ loader.load( 'hall.glb', function ( gltf ) {
 } );
 
 
-// ######################################################################### CONTROLS
-//const controls = new OrbitControls( camera, renderer.domElement );
-// controls.object.position.set(5, 1, 0);
-// controls.target = new THREE.Vector3(-6, 0, -6);
-
-// controls.maxPolarAngle = Math.PI / 2.2;
-// controls.minPolarAngle = Math.PI / 2.2;
-
-// controls.object.position.set(1, 1,  5);
-// controls.target = new THREE.Vector3(5, 1, 10);
-
-// controls.enableZoom = false;
 
 
-// ######################################################################### CAMERA
+
+const color =  0x4f4f4e
+const sizeX = 45;
+const sizeZ = 27;
+const size = 45;
+const divisions = 45;
+const gridHelper = new THREE.GridHelper(size, divisions, color, color);
+scene.add(gridHelper);
+
+
 
 
 
@@ -156,15 +175,26 @@ function onDocumentKeyDown(event){
     var keycode = event.keyCode;
     console.log(keycode)
 
-    let angleRot = 5;
+    let angleRot = 25;
     let radiansRot = 2 * Math.PI * (angleRot / 360);
-    const pt = new THREE.Vector3(0,0,0)
+    
+    
+    // 1 -> 97
+    // 2 -> 98
+    // 3 -> 99
+    // 4 -> 100
+    // 5 -> 101
+    // 6 -> 102
+    // 7 -> 103
+    // 8 -> 104
 
     switch(keycode){
         case 37 :
+            
             camera.rotation.y = camera.rotation.y + radiansRot;
             break;
         case 39 :
+           
             camera.rotation.y = camera.rotation.y - radiansRot;
             break;
         // case 38 :

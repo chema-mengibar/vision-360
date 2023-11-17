@@ -42,7 +42,7 @@ scene.add(light)
 
 
 const players = {
-    'player-g-1': {x:10, z:10},
+    'player-g-1': {x:10, z:-10},
     'player-g-2': {x:20, z:10},
     'player-g-3': {x:15, z:0},
     'player-g-4': {x:0, z:10},
@@ -63,8 +63,6 @@ loader.load( 'hall.glb', function ( gltf ) {
     _.scene.traverse(o => {
         
         if(o.name.includes('player-')){
-            
-            console.log(o.name)
 
             o.children.forEach( (child, idx) =>{
                
@@ -78,12 +76,16 @@ loader.load( 'hall.glb', function ( gltf ) {
                 
                 // basis circle in player
                 if(idx === 1){
-                    color = o.name.includes('-h') ? '#550000' :  '#000055'
-                    if(o.name === 'player-h-0'){
-                        color = '#005500'
-                    }
-                    opacity = 0.4;
+                   
+                    opacity = 1;
                 }
+
+                if(idx > 1){
+                    color =  '#000000'
+
+                    opacity = 1;
+                }
+                
                 const m = new THREE.MeshBasicMaterial({ color: color })
                 m.side = THREE.DoubleSide;
                 m.opacity = opacity;
@@ -150,7 +152,13 @@ camera.lookAt(pt);
 // ##########################################################################  OBJECTS
 
 
-
+const color =  0x4f4f4e
+const sizeX = 45;
+const sizeZ = 27;
+const size = 45;
+const divisions = 60;
+const gridHelper = new THREE.GridHelper(size, divisions, 0xff0000, color);
+scene.add(gridHelper);
 
 
 
