@@ -38,7 +38,7 @@ body {
 
 
 #app {
-  max-width: 1280px;
+  // max-width: 1280px;
   margin: 0 auto;
   padding: 0;
   text-align: center;
@@ -54,8 +54,42 @@ body {
   border: 1px solid white;
 }
 
+#display{
+  width: 300px;
+  height: 50px;
+  position: absolute;
+  top:10px;
+  right:10px;
+  border: 1px dotted rgb(99, 99, 99);
+  color: #444;
+  font-size: 12px;
+  padding: 7px;
+  text-align: left;;
+}
+
 #main-frame{
   position: relative;
   top:0;
   left:0;
 }
+
+
+#controls{
+  background-color: rgba(255, 0, 0, 0.5);
+  width: 100vw;
+  height: 50px;
+  position: absolute;
+  bottom:0;
+  left:0;
+  display: flex;
+  gap: 10px;
+
+  .control{
+    flex:1;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.87);
+    user-select: none;
+    cursor: move;
+  }
+}
+

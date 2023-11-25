@@ -1,4 +1,31 @@
-export default [
+import Scene0 from './scenes/scene-0.json'
+import Scene1 from './scenes/scene-1.json'
+import Scene2 from './scenes/scene-2.json'
+
+
+ const scenes = [
+    Scene0, Scene1, Scene2
+].map( sceneJson =>{
+
+    const players = {};
+    sceneJson.assets.forEach( assetItem =>{
+        players[ assetItem.name ] = {
+            x: assetItem.loc.x,
+            z: assetItem.loc.z,
+        }
+    })
+
+
+    return {
+        id : sceneJson.meta.name,
+        players: players
+    }
+} )
+
+
+export default scenes;
+
+const mock =  [
 
     {
         id:'game-1',

@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import Games from './Games'
+
 export default class SceneService {
 
   scene = new THREE.Scene();
@@ -13,10 +14,8 @@ export default class SceneService {
   cameraTop = null
   rendererTop = null
 
-  delta = 0;
-  
   flow = {
-    gameCursor: 1,
+    gameCursor: 0,
     crono: 5,
     cronoLimit: 5
   }
@@ -35,7 +34,7 @@ export default class SceneService {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     document.getElementById('main-frame').appendChild(this.renderer.domElement);
     this.scene.add(this.camera);
-    this.renderer.setClearColor( 0xffffff, 1);
+    this.renderer.setClearColor(0xffffff, 1);
 
     const camConfigTop = {
       fov: 75,
@@ -46,7 +45,7 @@ export default class SceneService {
     this.cameraTop = this.createCam(camConfigTop);
     this.rendererTop = new THREE.WebGLRenderer();
     this.rendererTop.setSize(300, 300);
-    this.rendererTop.setClearColor( 0xffffff, 1);
+    this.rendererTop.setClearColor(0xffffff, 1);
     document.getElementById('top-frame').appendChild(this.rendererTop.domElement);
     this.scene.add(this.cameraTop);
 
@@ -87,15 +86,13 @@ export default class SceneService {
 
 
   onDocumentKeyDown(event) {
-    if(!this.camera){ return;}
-    this.delta = 0.01;
+    if (!this.camera) { return; }
 
     event = event || window.event;
     const keycode = event.keyCode;
- 
-    const angleRot = 25;
-    const radiansRot = 2 * Math.PI * (angleRot / 360);
-    console.log(keycode)
+
+    console.log(keycode);
+
     switch (keycode) {
       case 97: // 1
       case 98: // 2
@@ -109,14 +106,24 @@ export default class SceneService {
         console.log(keycode)
         break;
       case 37:
-        this.camera.rotation.y = this.camera.rotation.y + radiansRot;
+        this.moveCam('left')
         break;
       case 39:
-        this.camera.rotation.y = this.camera.rotation.y - radiansRot;
+        this.moveCam('right')
         break;
       case 96:
         this.loadGame();
         break;
+    }
+  }
+
+  moveCam(direction = 'left') {
+    const angleRot = 25;
+    const radiansRot = 2 * Math.PI * (angleRot / 360);
+    if (direction === 'left') {
+      this.camera.rotation.y = this.camera.rotation.y + radiansRot;
+    } else {
+      this.camera.rotation.y = this.camera.rotation.y - radiansRot;
     }
   }
 
@@ -125,8 +132,8 @@ export default class SceneService {
     this.rendererTop.render(this.scene, this.cameraTop);
     this.renderer.render(this.scene, this.camera)
   }
-  
-  light(){
+
+  light() {
     const light = new THREE.AmbientLight(0xffffff);
     light.position.set(10, 10, 20)
     light.intensity = 5
@@ -150,11 +157,11 @@ export default class SceneService {
   get players() {
     return Games[this.flow.gameCursor].players
   }
-  
-  setAssets(){
+
+  setAssets() {
     const _ = this;
     let b;
-    
+
     this.scene.traverse(o => {
       // dist-1
       // dist-2
@@ -170,14 +177,14 @@ export default class SceneService {
           let opacity = 1;
 
           if (o.name === 'player-h-0') {
-            color = '#00ff00'
+            color = '#b32d93'
           }
 
           // basis circle in player
           if (idx === 1) {
             color = o.name.includes('-h') ? '#880000' : '#000088'
             if (o.name === 'player-h-0') {
-              color = '#008800'
+              color = '#ff9ce8'
             }
             opacity = 0.8;
           }
@@ -201,6 +208,7 @@ export default class SceneService {
         if (!o.name.includes('goalie')) {
           o.position.x = _.players[o.name].x;
           o.position.z = _.players[o.name].z;
+          // o.rotation.y = 4.5;
         }
 
         if (o.name === 'player-h-0') {
@@ -215,10 +223,35 @@ export default class SceneService {
       }
     })
   }
-  
-  loadGame(){
-    this.flow.gameCursor += 1;
+
+  loadGame() {
+    if (this.flow.gameCursor < Games.length - 1) {
+      this.flow.gameCursor += 1;
+
+    } else {
+      this.flow.gameCursor = 0;
+    }
+
+    
+
     this.setAssets();
+    this.startFlow();
+    this.display();
+  }
+
+
+  display(){
+    const displayConatiner = document.getElementById('display');
+    console.log(displayConatiner)
+    displayConatiner.innerHTML  = 'Scene: ' + this.flow.gameCursor;
+  }
+
+
+
+  startFlow() {
+    setTimeout(() => {
+      // alert('time!')
+    }, 5000)
   }
 
   load3D() {
@@ -228,6 +261,8 @@ export default class SceneService {
       _.init()
       _.scene.add(gltf.scene);
       _.setAssets()
+      _.display()
+      _.startFlow()
 
     }, undefined, function (error) {
       console.error('>>>>>>>>', error);
