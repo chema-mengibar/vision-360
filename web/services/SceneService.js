@@ -45,7 +45,7 @@ export default class SceneService {
     };
     this.cameraTop = this.createCam(camConfigTop);
     this.rendererTop = new THREE.WebGLRenderer();
-    this.rendererTop.setSize(200 , 160);
+    this.rendererTop.setSize(200, 160);
     this.rendererTop.setClearColor(0xffffff, 1);
     document.getElementById('top-frame').appendChild(this.rendererTop.domElement);
     this.scene.add(this.cameraTop);
@@ -172,7 +172,7 @@ export default class SceneService {
 
       // if(o.name.includes('dummy')){
       //   let parent = o.parent;
-			//     parent.remove( o );
+      //     parent.remove( o );
       //    console.log(parent)
 
       //   // const selectedObject = _.scene.getObjectByName(o.name);
@@ -246,7 +246,7 @@ export default class SceneService {
       this.flow.gameCursor = 0;
     }
 
-    
+
 
     this.setAssets();
     this.startFlow();
@@ -254,10 +254,10 @@ export default class SceneService {
   }
 
 
-  display(){
+  display() {
     const displayConatiner = document.getElementById('display');
     console.log(displayConatiner)
-    displayConatiner.innerHTML  = 'Scene: ' + this.flow.gameCursor;
+    displayConatiner.innerHTML = 'Scene: ' + this.flow.gameCursor;
   }
 
 
@@ -281,6 +281,14 @@ export default class SceneService {
     }, undefined, function (error) {
       console.error('>>>>>>>>', error);
     });
+  }
+
+  fullScreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
   }
 
 
