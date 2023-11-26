@@ -46,8 +46,8 @@ body {
 }
 
 #top-frame{
-  width: 300px;
-  height: 300px;
+  width: 200px;
+  height: 150px;
   position: absolute;
   top:0;
   left:0;
@@ -85,11 +85,20 @@ body {
   gap: 10px;
 
   .control{
+    display:flex;
     flex:1;
     height: 100%;
     background-color: rgba(255, 255, 255, 0.87);
     user-select: none;
+    justify-content: center;
+    align-items: center;
     cursor: move;
+
+    &.center{
+      max-width: 20%;
+      background-color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+    }
   }
 }
 

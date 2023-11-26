@@ -21,11 +21,11 @@ export default class SceneService {
   }
 
   constructor() {
-
+    //A
     const camConfig = {
       fov: 100,
       // aspect: window.innerWidth / window.innerHeight,
-      aspect: 1,
+      aspect: 1.5,
       near: 0.1,
       far: 1000.0
     };
@@ -36,15 +36,16 @@ export default class SceneService {
     this.scene.add(this.camera);
     this.renderer.setClearColor(0xffffff, 1);
 
+    //B
     const camConfigTop = {
       fov: 75,
-      aspect: 1,
+      aspect: 1.2,
       near: 0.1,
       far: 1000.0
     };
     this.cameraTop = this.createCam(camConfigTop);
     this.rendererTop = new THREE.WebGLRenderer();
-    this.rendererTop.setSize(300, 300);
+    this.rendererTop.setSize(200 , 160);
     this.rendererTop.setClearColor(0xffffff, 1);
     document.getElementById('top-frame').appendChild(this.rendererTop.domElement);
     this.scene.add(this.cameraTop);
@@ -57,9 +58,11 @@ export default class SceneService {
     const pt = new THREE.Vector3(0, 0, 0)
     this.cameraTop.lookAt(pt);
 
+    // Flow
     this.animate = this.animate.bind(this)
     this.onDocumentKeyDown = this.onDocumentKeyDown.bind(this)
 
+    //
     this.load3D();
 
 
@@ -165,6 +168,17 @@ export default class SceneService {
     this.scene.traverse(o => {
       // dist-1
       // dist-2
+
+
+      // if(o.name.includes('dummy')){
+      //   let parent = o.parent;
+			//     parent.remove( o );
+      //    console.log(parent)
+
+      //   // const selectedObject = _.scene.getObjectByName(o.name);
+      //   //  _.scene.remove( parent );
+      //   // console.log(selectedObject)
+      // }
 
       if (o.name.includes('player-')) {
         o.children.forEach((child, idx) => {
