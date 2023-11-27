@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import Games from './Games'
+import {FlakesTexture, Sky} from "three/addons";
 
 export default class SceneService {
 
@@ -34,7 +35,7 @@ export default class SceneService {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     document.getElementById('main-frame').appendChild(this.renderer.domElement);
     this.scene.add(this.camera);
-    this.renderer.setClearColor(0xffffff, 1);
+   
 
     //B
     const camConfigTop = {
@@ -54,19 +55,17 @@ export default class SceneService {
     controls.object.position.set(5, 1, 0);
     controls.target = new THREE.Vector3(-6, 0, -6);
 
-    this.cameraTop.position.set(0, 35, 0);
+    this.cameraTop.position.set(0, 28, 0);
     const pt = new THREE.Vector3(0, 0, 0)
     this.cameraTop.lookAt(pt);
-
     // Flow
     this.animate = this.animate.bind(this)
     this.onDocumentKeyDown = this.onDocumentKeyDown.bind(this)
-
-    //
+        //
     this.load3D();
-
-
   }
+  
+  
 
 
   createCam(camConfig) {
@@ -78,6 +77,7 @@ export default class SceneService {
   init() {
     const _ = this;
     setTimeout(() => {
+      this.sky();
       this.light();
       // this.grid();
       _.renderer.render(_.scene, _.camera);
@@ -131,17 +131,38 @@ export default class SceneService {
   }
 
   animate() {
+
     requestAnimationFrame(this.animate)
     this.rendererTop.render(this.scene, this.cameraTop);
     this.renderer.render(this.scene, this.camera)
   }
+  
 
   light() {
-    const light = new THREE.AmbientLight(0xffffff);
-    light.position.set(10, 10, 20)
-    light.intensity = 5
-    light.castShadow = true;
-    this.scene.add(light)
+    
+     const l0 = new THREE.AmbientLight(0xffffff, 2)
+    
+    const l1 = new THREE.DirectionalLight(0xd4fbff, 3);
+    l1.position.set(-1, 11, 3);  
+    
+ 
+
+
+    //     light.shadowCameraLeft = -3000;
+    // light.shadowCameraRight = 3000;
+    // light.shadowCameraTop = 3500;
+    // light.shadowCameraBottom = -3000;
+
+
+
+    this.scene.add( l0, l1 );
+  }
+
+
+  sky(){
+     this.renderer.setClearColor(0x000000, 0);
+    
+     // renderer.setClearColor(0x000000, 0);
   }
 
   grid() {
@@ -160,6 +181,8 @@ export default class SceneService {
   get players() {
     return Games[this.flow.gameCursor].players
   }
+    
+
 
   setAssets() {
     const _ = this;
@@ -169,6 +192,47 @@ export default class SceneService {
       // dist-1
       // dist-2
 
+
+      
+      if(o.name === 'rink-floor'){
+       o.material.color = new THREE.Color(0xd4fbff);
+      }
+
+      if(o.name === 'rink-band'){
+
+        const texture = new THREE.CanvasTexture(new FlakesTexture());
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.x = 2;
+        texture.repeat.y = 15;
+        texture.rotation = 2;
+        
+        const rMat = new THREE.MeshPhysicalMaterial({ 
+          color: 0xececec, 
+          clearcoat: 25.8,
+          clearcoatRoughness: 8.0,
+          metalness: 0.1,
+          roughness: 10.9,
+          normalMap: texture,
+          normalScale: new THREE.Vector2(0.2, 0.15)
+          
+
+        })
+        
+        o.children.forEach((child, idx) => {
+          
+          // side bands
+          let color = 0xbebebe;
+          
+          // nord, south bands
+          if(idx === 0 ){
+            color = 0xbcbcbc;
+          }
+          // child.material.color = new THREE.Color(color);
+          child.material = rMat;
+        })
+        
+      }
 
       // if(o.name.includes('dummy')){
       //   let parent = o.parent;
@@ -255,9 +319,8 @@ export default class SceneService {
 
 
   display() {
-    const displayConatiner = document.getElementById('display');
-    console.log(displayConatiner)
-    displayConatiner.innerHTML = 'Scene: ' + this.flow.gameCursor;
+    const displayContainer = document.getElementById('display');
+    displayContainer.innerHTML = 'Scene: ' + this.flow.gameCursor;
   }
 
 

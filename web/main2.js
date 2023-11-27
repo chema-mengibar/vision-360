@@ -21,6 +21,6 @@ controlC.addEventListener('click', function() {
   sceneService.loadGame()
 });
 
-mainFrame.addEventListener('click', function() {
+mainFrame.addEventListener('dblclick', function() {
   sceneService.fullScreen()
 });
